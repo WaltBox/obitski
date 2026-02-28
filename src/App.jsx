@@ -67,12 +67,16 @@ export default function App() {
   return (
     <div className="page">
       <main className="card">
-        <img
-          src="/obitski-logo.png"
-          alt="Obitski logo"
-          className="logo"
-          loading="eager"
-        />
+        <nav className="nav" aria-label="Primary">
+          <div className="nav-pill">
+            <img
+              src="/obitski-logo.png"
+              alt="Obitski logo"
+              className="nav-logo"
+              loading="eager"
+            />
+          </div>
+        </nav>
 
         <div className={`type ${done ? "done" : ""}`}>
           {typed}
