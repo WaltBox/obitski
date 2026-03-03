@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 
 function useReveal() {
   useEffect(() => {
@@ -33,38 +33,38 @@ const LINE_PAUSE = 600;
 function useTypewriter(lines) {
   const [typed, setTyped] = useState("");
   const [done, setDone] = useState(false);
-  const lineIdx = useRef(0);
-  const charIdx = useRef(0);
-
-  const fullText = useMemo(() => lines.join("\n"), [lines]);
+  const fullText = lines.join("\n");
 
   useEffect(() => {
-    if (done) return;
+    let lineIdx = 0;
+    let charIdx = 0;
+    let cancelled = false;
 
-    const line = lines[lineIdx.current];
-    if (!line) {
-      setDone(true);
-      return;
+    function tick() {
+      if (cancelled) return;
+
+      const line = lines[lineIdx];
+      if (!line) {
+        setTyped(fullText);
+        setDone(true);
+        return;
+      }
+
+      if (charIdx < line.length) {
+        setTyped((prev) => prev + line.charAt(charIdx));
+        charIdx += 1;
+        setTimeout(tick, TYPING_SPEED);
+      } else {
+        setTyped((prev) => prev + "\n");
+        charIdx = 0;
+        lineIdx += 1;
+        setTimeout(tick, LINE_PAUSE);
+      }
     }
 
-    const id =
-      charIdx.current < line.length
-        ? setTimeout(() => {
-            setTyped((p) => p + line.charAt(charIdx.current));
-            charIdx.current += 1;
-          }, TYPING_SPEED)
-        : setTimeout(() => {
-            setTyped((p) => p + "\n");
-            charIdx.current = 0;
-            lineIdx.current += 1;
-          }, LINE_PAUSE);
-
-    return () => clearTimeout(id);
-  });
-
-  useEffect(() => {
-    if (done) setTyped(fullText);
-  }, [done, fullText]);
+    tick();
+    return () => { cancelled = true; };
+  }, []);
 
   return { typed, done };
 }
