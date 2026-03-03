@@ -1,89 +1,118 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 
 const LINES = [
   "I read obituaries.",
   "Every day.",
   "Thousands of them.",
-  "How can I help you?",
 ];
 
-const TYPING_SPEED = 52;
-const LINE_PAUSE = 650;
+const TYPING_SPEED = 50;
+const LINE_PAUSE = 600;
 
-export default function App() {
+function useTypewriter(lines) {
   const [typed, setTyped] = useState("");
-  const [lineIndex, setLineIndex] = useState(0);
-  const [charIndex, setCharIndex] = useState(0);
   const [done, setDone] = useState(false);
-  const [response, setResponse] = useState("");
+  const lineIdx = useRef(0);
+  const charIdx = useRef(0);
 
-  const fullText = useMemo(() => LINES.join("\n"), []);
+  const fullText = useMemo(() => lines.join("\n"), [lines]);
 
   useEffect(() => {
     if (done) return;
 
-    const currentLine = LINES[lineIndex];
-    if (!currentLine) {
+    const line = lines[lineIdx.current];
+    if (!line) {
       setDone(true);
       return;
     }
 
     const id =
-      charIndex < currentLine.length
+      charIdx.current < line.length
         ? setTimeout(() => {
-            setTyped((p) => p + currentLine.charAt(charIndex));
-            setCharIndex((c) => c + 1);
+            setTyped((p) => p + line.charAt(charIdx.current));
+            charIdx.current += 1;
           }, TYPING_SPEED)
         : setTimeout(() => {
             setTyped((p) => p + "\n");
-            setCharIndex(0);
-            setLineIndex((l) => l + 1);
+            charIdx.current = 0;
+            lineIdx.current += 1;
           }, LINE_PAUSE);
 
     return () => clearTimeout(id);
-  }, [charIndex, done, lineIndex]);
+  });
 
   useEffect(() => {
     if (done) setTyped(fullText);
   }, [done, fullText]);
 
-  const handleSubmit = (e) => {
+  return { typed, done };
+}
+
+function BookDemoButton({ className = "", onBook, showResponse = true }) {
+  const [clicked, setClicked] = useState(false);
+  const handleClick = (e) => {
     e.preventDefault();
-    const val = e.target.question.value.trim();
-    if (!val) return;
-    setResponse("Searching...");
-    e.target.reset();
-    setTimeout(() => setResponse("Obitski is listening. Results coming soon."), 1200);
+    setClicked(true);
+    onBook?.();
   };
 
   return (
+    <>
+      <a href="#" className={`cta-demo ${className}`} onClick={handleClick}>
+        Book a demo
+      </a>
+      {showResponse && clicked && (
+        <p className="response">Thanks! We&apos;ll be in touch to schedule your demo.</p>
+      )}
+    </>
+  );
+}
+
+export default function App() {
+  const { typed, done } = useTypewriter(LINES);
+  const [demoRequested, setDemoRequested] = useState(false);
+
+  return (
     <div className="page">
-      <main className="hero">
-        <img src="/obitski-logo.png" alt="Obitski" className="logo" />
-
-        <div className={`typewriter ${done ? "done" : ""}`}>
-          {typed}
-          {!done && <span className="caret" />}
+      {demoRequested && (
+        <div className="demo-toast">
+          Thanks! We&apos;ll be in touch to schedule your demo.
         </div>
+      )}
 
-        <div className={`search-wrap ${done ? "visible" : ""}`}>
-          <form className="search-bar" onSubmit={handleSubmit}>
-            <input
-              name="question"
-              type="text"
-              placeholder="Search for someone..."
-              autoComplete="off"
-            />
-            <button type="submit" aria-label="Search">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="11" cy="11" r="8" />
-                <line x1="21" y1="21" x2="16.65" y2="16.65" />
-              </svg>
-            </button>
-          </form>
-          {response && <p className="response">{response}</p>}
+      {/* Nav */}
+      <nav className="nav">
+        <div className="nav-inner">
+          <img src="/obitski-word.png" alt="Obitski" className="nav-wordmark" />
+          <BookDemoButton
+            className="nav-cta"
+            showResponse={false}
+            onBook={() => setDemoRequested(true)}
+          />
         </div>
-      </main>
+      </nav>
+
+      {/* Hero */}
+      <section className="hero">
+        <div className="hero-content">
+          <img src="/obitski-logo.png" alt="Obitski" className="hero-logo" />
+          <p className="eyebrow">Obituary Intelligence</p>
+
+          <div className={`typewriter ${done ? "done" : ""}`}>
+            {typed}
+            {!done && <span className="caret" />}
+          </div>
+
+          <h2 className={`headline ${done ? "visible" : ""}`}>
+            How can I help you?
+          </h2>
+
+          <div className={`cta-wrap ${done ? "visible" : ""}`}>
+            <BookDemoButton onBook={() => setDemoRequested(true)} showResponse={false} />
+            <p className="cta-hint">See how Obitski can power your business.</p>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
