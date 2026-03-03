@@ -36,30 +36,23 @@ function useTypewriter(lines) {
   const fullText = lines.join("\n");
 
   useEffect(() => {
-    let lineIdx = 0;
-    let charIdx = 0;
+    let idx = 0;
     let cancelled = false;
 
     function tick() {
       if (cancelled) return;
 
-      const line = lines[lineIdx];
-      if (!line) {
+      if (idx >= fullText.length) {
         setTyped(fullText);
         setDone(true);
         return;
       }
 
-      if (charIdx < line.length) {
-        setTyped((prev) => prev + line.charAt(charIdx));
-        charIdx += 1;
-        setTimeout(tick, TYPING_SPEED);
-      } else {
-        setTyped((prev) => prev + "\n");
-        charIdx = 0;
-        lineIdx += 1;
-        setTimeout(tick, LINE_PAUSE);
-      }
+      const char = fullText.charAt(idx);
+      const isNewline = char === "\n";
+      setTyped((prev) => prev + char);
+      idx += 1;
+      setTimeout(tick, isNewline ? LINE_PAUSE : TYPING_SPEED);
     }
 
     tick();
@@ -130,12 +123,12 @@ export default function App() {
             {!done && <span className="caret" />}
           </div>
 
-          <p className={`hero-subhead ${done ? "visible" : ""}`}>
+          <p className="hero-subhead">
             The largest obituary database in the United States —{" "}
             <em>delivered through a single API.</em>
           </p>
 
-          <div className={`hero-stats ${done ? "visible" : ""}`}>
+          <div className="hero-stats">
             {STATS.map((s) => (
               <div className="hero-stat" key={s.label}>
                 <span className="hero-stat-num">{s.num}</span>
@@ -144,7 +137,7 @@ export default function App() {
             ))}
           </div>
 
-          <div className={`cta-wrap ${done ? "visible" : ""}`}>
+          <div className="cta-wrap">
             <BookDemoButton onBook={() => setDemoRequested(true)} showResponse={false} />
             <a href="#publishers" className="cta-secondary">
               See how it works ↓
@@ -353,6 +346,10 @@ export default function App() {
           </div>
         </div>
       </section>
+
+      <footer className="footer">
+        <p>&copy; {new Date().getFullYear()} Obitski. All rights reserved.</p>
+      </footer>
     </div>
   );
 }
