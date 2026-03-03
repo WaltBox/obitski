@@ -22,7 +22,7 @@ const LINES = [
 ];
 
 const STATS = [
-  { num: "2.4M+", label: "Obituaries indexed" },
+  { num: "51.2M+", label: "Obituaries indexed" },
   { num: "Daily", label: "New additions" },
   { num: "50", label: "States covered" },
 ];
@@ -235,7 +235,7 @@ export default function App() {
                 </div>
                 <div className="api-stats">
                   <div className="api-stat">
-                    <span className="api-stat-num">2.4M+</span>
+                    <span className="api-stat-num">51.2M+</span>
                     <span className="api-stat-label">Obituaries indexed</span>
                   </div>
                   <div className="api-stat">
@@ -346,10 +346,6 @@ export default function App() {
           </div>
         </div>
       </section>
-
-      <footer className="footer">
-        <p>&copy; {new Date().getFullYear()} Obitski. All rights reserved.</p>
-      </footer>
     </div>
   );
 }
