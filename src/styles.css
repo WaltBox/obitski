@@ -20,6 +20,8 @@
   --playfair: "Playfair Display", Georgia, serif;
   --baskerville: "Libre Baskerville", Georgia, serif;
   --sans: "DM Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  --mono: "JetBrains Mono", monospace;
+  --gold: #bf8b3d;
 }
 
 html,
@@ -440,6 +442,177 @@ body {
   line-height: 1.55;
   color: var(--ink-light);
   margin-bottom: 28px;
+}
+
+/* ========== HOME (ABOUT ME) ========== */
+
+.home {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--cream);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 64px 28px;
+}
+
+.home-inner {
+  width: 100%;
+  max-width: 500px;
+  text-align: left;
+}
+
+.home-logo {
+  display: block;
+  width: 116px;
+  height: auto;
+  margin: 0 0 48px;
+  animation: aboutTextIn 0.6s ease both;
+}
+
+.home-actions {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  margin-top: 52px;
+  animation: aboutTextIn 0.9s ease both;
+}
+
+.home-btn {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  padding: 15px 26px;
+  border-radius: 4px;
+  border: 1px solid var(--ink);
+  text-decoration: none;
+  transition: background 0.22s ease, color 0.22s ease, transform 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.home-btn-primary {
+  background: var(--ink);
+  color: var(--cream);
+}
+
+.home-btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(26, 23, 20, 0.22);
+}
+
+.home-btn-ghost {
+  background: transparent;
+  color: var(--ink);
+}
+
+.home-btn-ghost:hover {
+  background: var(--ink);
+  color: var(--cream);
+  transform: translateY(-1px);
+}
+
+/* ========== WHO I AM (ABOUT ME) ========== */
+
+.about {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--cream);
+  padding: 88px 24px 96px;
+  display: flex;
+  justify-content: center;
+}
+
+.about-inner {
+  width: 100%;
+  max-width: 460px;
+  text-align: left;
+}
+
+.about-eyebrow {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.about-eyebrow::after {
+  content: "";
+  display: block;
+  width: 26px;
+  height: 2px;
+  background: var(--gold);
+  margin-top: 14px;
+  opacity: 0.85;
+}
+
+.about-lines {
+  margin-top: 44px;
+}
+
+.about-line {
+  font-family: var(--mono);
+  font-size: 16px;
+  line-height: 1.7;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  animation: aboutTextIn 0.6s ease both;
+}
+
+.about-rule {
+  border: none;
+  height: 1px;
+  background: var(--rule);
+  margin: 28px 0;
+  transform-origin: left center;
+  animation: aboutLineIn 0.7s ease both;
+}
+
+.about-mascot {
+  display: block;
+  width: 150px;
+  height: auto;
+  margin: 44px auto 40px;
+  animation: aboutTextIn 0.8s ease both;
+}
+
+.about-back {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-muted);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.about-back:hover {
+  color: var(--ink);
+}
+
+@keyframes aboutTextIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes aboutLineIn {
+  from {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  to {
+    opacity: 1;
+    transform: scaleX(1);
+  }
 }
 
 /* ========== MOBILE ========== */

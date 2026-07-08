@@ -1,98 +1,53 @@
-import { useEffect, useState } from "react";
 import { Link } from "../router.jsx";
 
-// Each thought is typed on its own line, with a pause after it.
-// A longer pause precedes the closing invitation.
-const SEQUENCE = [
-  { text: "I read obituaries.", pauseAfter: 750 },
-  { text: "Every day.", pauseAfter: 750 },
-  { text: "Thousands of them.", pauseAfter: 1600 },
-  { text: "I'd like to get to know you.", pauseAfter: 0 },
+const LINES = [
+  "I organize obituaries by a city.",
+  "I turn them into publishable content.",
+  "I help publishers keep their communities informed.",
 ];
 
-const START_DELAY = 1000; // stillness before the first character
-const TYPING_SPEED = 55;
-
-function useIntroTypewriter(sequence) {
-  const [text, setText] = useState("");
-  const [done, setDone] = useState(false);
-
-  useEffect(() => {
-    const reduce = window.matchMedia?.(
-      "(prefers-reduced-motion: reduce)"
-    )?.matches;
-    if (reduce) {
-      setText(sequence.map((s) => s.text).join("\n"));
-      setDone(true);
-      return;
-    }
-
-    let cancelled = false;
-    const timers = [];
-    let out = "";
-    let li = 0;
-    let ci = 0;
-
-    function step() {
-      if (cancelled) return;
-      const line = sequence[li];
-      if (ci < line.text.length) {
-        out += line.text[ci];
-        ci += 1;
-        setText(out);
-        timers.push(setTimeout(step, TYPING_SPEED));
-      } else if (li < sequence.length - 1) {
-        timers.push(
-          setTimeout(() => {
-            if (cancelled) return;
-            out += "\n";
-            setText(out);
-            li += 1;
-            ci = 0;
-            step();
-          }, line.pauseAfter)
-        );
-      } else {
-        setDone(true);
-      }
-    }
-
-    timers.push(setTimeout(step, START_DELAY));
-    return () => {
-      cancelled = true;
-      timers.forEach(clearTimeout);
-    };
-  }, []);
-
-  return { text, done };
-}
-
 export default function Home() {
-  const { text, done } = useIntroTypewriter(SEQUENCE);
-
   return (
-    <main className="intro">
-      <div className="intro-mark">
-        <img src="/obitski-logo.png" alt="Obitski" className="intro-emblem" />
-      </div>
+    <main className="home">
+      <div className="home-inner">
+        <img src="/obitski-logo.png" alt="Obitski" className="home-logo" />
 
-      <div className="intro-typed">
-        {text}
-        <span className="caret" />
-      </div>
+        <div className="about-eyebrow">About Me</div>
 
-      <nav className={`intro-actions ${done ? "visible" : ""}`}>
-        <Link to="/who-i-am" className="intro-btn" tabIndex={done ? 0 : -1}>
-          Who I Am
-        </Link>
-        <Link
-          to="/tell-me-about-you"
-          className="intro-btn"
-          tabIndex={done ? 0 : -1}
+        <div className="about-lines">
+          {LINES.map((line, i) => (
+            <div className="about-item" key={i}>
+              <p
+                className="about-line"
+                style={{ animationDelay: `${0.25 + i * 0.35}s` }}
+              >
+                {line}
+              </p>
+              {i < LINES.length - 1 && (
+                <hr
+                  className="about-rule"
+                  style={{ animationDelay: `${0.45 + i * 0.35}s` }}
+                />
+              )}
+            </div>
+          ))}
+        </div>
+
+        <nav
+          className="home-actions"
+          style={{ animationDelay: `${0.45 + LINES.length * 0.35}s` }}
         >
-          Tell Me About You
-        </Link>
-      </nav>
+          <Link to="/who-i-am" className="home-btn home-btn-ghost">
+            Who I Am
+          </Link>
+          <Link
+            to="/tell-me-about-you"
+            className="home-btn home-btn-primary"
+          >
+            Tell Me About You
+          </Link>
+        </nav>
+      </div>
     </main>
   );
 }
